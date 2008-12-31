@@ -20,7 +20,7 @@ require 'logger'
 class ExchangeCleaner
 
 	def initialize
-		@log = Logger.new(STDOUT);	@log.level = Logger::INFO
+		@log = Logger.new(STDOUT);	@log.level = Logger::DEBUG
 	end
 
 	def delete_pesky_mails(server,username,password,dry_run)
@@ -72,13 +72,13 @@ class ExchangeCleaner
 	
 	def delete_message box, message_number
 		@log.info("Deleting message #{box}-#{message_number}")
-		send_command "? store #{message_number} +FLAGS (\Deleted)"
+		send_command "? store #{message_number} +FLAGS (\\Deleted)"
 		send_command "? expunge" 
 	end
 	
 	def is_rfc_822_compatible? box,message_number
 		@log.debug("Checking#{box}, #{message_number}")
-		text = send_command "? FETCH #{message_number} rfc822.header"
+		text = send_command "? FETCH #{message_number} rfc822.text"
 		!text.include? 'NO The requested message could not be converted to an RFC-822 compatible format'
 	end
 
@@ -92,7 +92,7 @@ class ExchangeCleaner
 	end
 
 	def connect_to_exchange server, username, password
-		@client = Net::Telnet.new('Host' => server, 'Port' => '143',"Prompt" => /[#>:]/n, 'Timeout' => 5 )
+		@client = Net::Telnet.new('Host' => server, 'Port' => '143',"Prompt" => /[#>:]/n, 'Timeout' => 15 )
 		login username, password
 	end
 
