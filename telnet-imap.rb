@@ -31,10 +31,6 @@ class ExchangeCleaner
 	end
 
 	private 
-	def list_all_folders 			
-		send_command "? LIST \"\" \"*\""; 	
-	end	
-
 	def select_box box
 		send_command "? SELECT \"#{box}\"";					
 	end
@@ -57,18 +53,16 @@ class ExchangeCleaner
 			(1...number_of_messages).each do |i|
 				compatible = is_rfc_822_compatible? box,i			
 				@log.debug("#{box}-message-#{i}-rfc-compatible?-#{compatible}")				
-				@log.info("#{box}-message-#{i}-rfc-compatible?-#{compatible}") if !compatible
 				if !compatible
 					if dry_run.eql?('y')
-						delete_message box,i	
+						puts "I could have deleted this message you chicken"						
 					else
-						puts "I could have deleted this message you chicken"
+						delete_message box,i	
 					end	
 				end
 			end
 		end	
 	end
-
 	
 	def delete_message box, message_number
 		@log.info("Deleting message #{box}-#{message_number}")
