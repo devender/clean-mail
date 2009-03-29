@@ -103,4 +103,3 @@ end
 
 e = ExchangeCleaner.new
 e.delete_pesky_mails ARGV[0], ARGV[1], ARGV[2], ARGV[3]
-
